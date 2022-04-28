@@ -25,15 +25,7 @@ const addRepair = async (req, res) => {
 
 const getRepairById = async (req, res) => {
   try {
-    const { id } = req.params;
-    const repair = await Repair.findOne({ where: { id } });
-
-    if (!repair || repair.status !== 'pending') {
-      return res.status(404).json({
-        status: 'error',
-        messaje: 'Item not found given that id',
-      });
-    }
+    const { repair } = req;
 
     res.status(200).json({ repair });
   } catch (error) {
@@ -43,17 +35,7 @@ const getRepairById = async (req, res) => {
 
 const updateRepairStatus = async (req, res) => {
   try {
-    const { id } = req.params;
-    const { status } = req.body;
-
-    const repair = await Repair.findOne({ where: { id } });
-
-    if (!repair || repair.status !== 'pending') {
-      return res.status(404).json({
-        status: 'error',
-        messaje: 'Item not found given that id',
-      });
-    }
+    const { repair } = req;
 
     repair.update({ status: 'completed' });
 
@@ -67,15 +49,7 @@ const updateRepairStatus = async (req, res) => {
 
 const deleteRepairOrder = async (req, res) => {
   try {
-    const { id } = req.params;
-    const repair = await Repair.findOne({ where: { id } });
-
-    if (!repair || repair.status !== 'pending') {
-      return res.status(404).json({
-        status: 'error',
-        messaje: 'Item not found given that id',
-      });
-    }
+    const { repair } = req;
 
     repair.update({ status: 'cancelled' });
 

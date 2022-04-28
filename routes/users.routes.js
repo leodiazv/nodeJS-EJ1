@@ -2,6 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 
+//Middlewares
+
+const { userExists } = require('../middlewares/users.middlewares');
+
 //Controller
 
 const {
@@ -12,21 +16,13 @@ const {
   deleteUser,
 } = require('../controllers/user.controller');
 
-//HTTP request
-
-/* router.get('/', getAllUsers);
-
-router.get('/:id', getUserById);
-
-router.post('/', createUser);
-
-router.patch('/:id', updateUser);
-
-router.delete('/:id', deleteUser); */
-
 // Las siguientes lineas mejoran el codigo de las rutas comentadas
 
-router.route('/').get(getAllUsers).post(createUser);
-router.route('/:id').get(getUserById).patch(updateUser).delete(deleteUser);
+router.route('/').get(getAllUsers);
+router
+  .route('/:id')
+  .get(userExists, getUserById)
+  .patch(userExists, updateUser)
+  .delete(userExists, deleteUser);
 
 module.exports = { usersRouter: router };
