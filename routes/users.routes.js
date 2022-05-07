@@ -5,6 +5,10 @@ const router = express.Router();
 //Middlewares
 
 const { userExists } = require('../middlewares/users.middlewares');
+const {
+  createUserValidations,
+  checkCreateUserValidation,
+} = require('../middlewares/validations.middlewares');
 
 //Controller
 
@@ -18,7 +22,10 @@ const {
 
 // Las siguientes lineas mejoran el codigo de las rutas comentadas
 
-router.route('/').get(getAllUsers);
+router
+  .route('/')
+  .get(getAllUsers)
+  .post(createUserValidations, checkCreateUserValidation, createUser);
 router
   .route('/:id')
   .get(userExists, getUserById)

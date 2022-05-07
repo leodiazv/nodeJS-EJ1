@@ -5,6 +5,10 @@ const router = express.Router();
 //Middlewares
 
 const { repairActive } = require('../middlewares/repairs.middlewares');
+const {
+  createRepairValidations,
+  checkCreateRepairValidation,
+} = require('../middlewares/validations.middlewares');
 
 //Controller
 
@@ -18,11 +22,15 @@ const {
 
 //HTTP request
 
-router.route('/').get(getRepairs).post(addRepair);
 router
+  .route('/')
+  .get(getRepairs)
+  .post(createRepairValidations, checkCreateRepairValidation, addRepair);
+router
+  .use('/:id', repairActive)
   .route('/:id')
-  .get(repairActive, getRepairById)
-  .patch(repairActive, updateRepairStatus)
-  .delete(repairActive, deleteRepairOrder);
+  .get(getRepairById)
+  .patch(updateRepairStatus)
+  .delete(deleteRepairOrder);
 
 module.exports = { repairsRouter: router };
