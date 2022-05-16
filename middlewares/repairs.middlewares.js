@@ -18,4 +18,14 @@ const repairActive = catchAsync(async (req, res, next) => {
   next();
 });
 
-module.exports = { repairActive };
+const protectedAccessToRepairs = catchAsync(async (req, res, next) => {
+  const { sessionUser } = req;
+
+  if (sessionUser.role === 'admin' || sessionUser.role === 'employee') {
+    next();
+  } else {
+    return next(new AppError('Unauthorized access', 403));
+  }
+});
+
+module.exports = { repairActive, protectedAccessToRepairs };

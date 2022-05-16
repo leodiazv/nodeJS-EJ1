@@ -4,10 +4,14 @@ const router = express.Router();
 
 //Middlewares
 
-const { repairActive } = require('../middlewares/repairs.middlewares');
+const {
+  repairActive,
+  protectedAccessToRepairs,
+} = require('../middlewares/repairs.middlewares');
+const { protectToken } = require('../middlewares/users.middlewares');
 const {
   createRepairValidations,
-  checkCreateRepairValidation,
+  checkValidations,
 } = require('../middlewares/validations.middlewares');
 
 //Controller
@@ -22,12 +26,15 @@ const {
 
 //HTTP request
 
+// Apply protectToken middleware
+router.use(protectToken);
+
 router
   .route('/')
-  .get(getRepairs)
-  .post(createRepairValidations, checkCreateRepairValidation, addRepair);
+  .get(protectedAccessToRepairs, getRepairs)
+  .post(createRepairValidations, checkValidations, addRepair);
 router
-  .use('/:id', repairActive)
+  .use('/:id', protectedAccessToRepairs, repairActive)
   .route('/:id')
   .get(getRepairById)
   .patch(updateRepairStatus)

@@ -7,7 +7,7 @@ const { catchAsync } = require('../utils/catchAsync');
 
 const getRepairs = catchAsync(async (req, res, next) => {
   const repairs = await Repair.findAll({
-    include: [{ model: User }],
+    include: [{ model: User, attributes: { exclude: ['password'] } }],
   });
   res.status(200).json({
     repairs,
@@ -16,13 +16,14 @@ const getRepairs = catchAsync(async (req, res, next) => {
 
 const addRepair = catchAsync(async (req, res, next) => {
   const { date, computerNumber, comments, status, userId } = req.body;
+  const { sessionUser } = req;
 
   const newRepair = await Repair.create({
     date,
     computerNumber,
     comments,
     status,
-    userId,
+    userId: sessionUser.id,
   });
 
   res.status(201).json({ newRepair });

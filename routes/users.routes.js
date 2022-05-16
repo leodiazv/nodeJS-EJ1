@@ -4,10 +4,15 @@ const router = express.Router();
 
 //Middlewares
 
-const { userExists } = require('../middlewares/users.middlewares');
+const {
+  userExists,
+  protectToken,
+  protectAccountOwner,
+} = require('../middlewares/users.middlewares');
 const {
   createUserValidations,
-  checkCreateUserValidation,
+  loginValidations,
+  checkValidations,
 } = require('../middlewares/validations.middlewares');
 
 //Controller
@@ -18,18 +23,23 @@ const {
   getUserById,
   updateUser,
   deleteUser,
+  login,
 } = require('../controllers/user.controller');
 
-// Las siguientes lineas mejoran el codigo de las rutas comentadas
+//HTTP request
 
-router
-  .route('/')
-  .get(getAllUsers)
-  .post(createUserValidations, checkCreateUserValidation, createUser);
+router.route('/').post(createUserValidations, checkValidations, createUser);
+router.route('/login').post(loginValidations, checkValidations, login);
+
+// Apply protectToken middleware
+
+router.use(protectToken);
+
+router.route('/').get(getAllUsers);
 router
   .route('/:id')
   .get(userExists, getUserById)
-  .patch(userExists, updateUser)
-  .delete(userExists, deleteUser);
+  .patch(userExists, protectAccountOwner, updateUser)
+  .delete(userExists, protectAccountOwner, deleteUser);
 
 module.exports = { usersRouter: router };
