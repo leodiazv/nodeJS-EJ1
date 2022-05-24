@@ -9,6 +9,8 @@ const { globalErrorHandler } = require('./controllers/errors.controller');
 
 const { usersRouter } = require('./routes/users.routes');
 const { repairsRouter } = require('./routes/repairs.routes');
+const { default: helmet } = require('helmet');
+const compression = require('compression');
 
 //Init express app
 const app = express();
@@ -19,6 +21,14 @@ app.use(cors());
 
 //Enable incoming JSON data
 app.use(express.json());
+
+// Heroku
+
+app.use(helmet());
+app.use(compression());
+
+if (process.env.NODE_ENV === 'development') app.use(morgan('dev'));
+else app.use(morgan('combined'));
 
 //Endpoints
 
